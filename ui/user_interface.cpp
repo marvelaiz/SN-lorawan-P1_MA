@@ -121,6 +121,10 @@ user_interface_handle *user_interface_get() { return user_interface; }
 
 // }
 
+void user_interface_handle::set_RGB_colour(RGB_Color colour){
+    RGB_Led.write(colour);
+}
+
 void user_interface_btn_pressed_cb() {
 
   // Change to next mode when its needed
@@ -131,7 +135,7 @@ void user_interface_btn_pressed_cb() {
 
 void user_interface_init(BufferedSerial *serial_port) {
   user_interface = new user_interface_handle(serial_port);
-  RGB_Led.write(RGB_White);
+  RGB_Led.write(RGB_None);
 
   // Setup interrupt funtions to track user interactions with the system
   user_interface->User_Btn = &User_Button;

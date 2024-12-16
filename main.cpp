@@ -106,7 +106,7 @@ static lorawan_app_callbacks_t callbacks;
  * testing functions
  */
 
-void payload_packaging(){
+size_t payload_packaging(){
 
     /*Testing the payload  packaging process*/
 
@@ -127,48 +127,80 @@ if (sensors_interface->p_gps->is_sensor_available) {
         sensors_interface->p_colour_sensor->read_meassurement();
       }
 
-            // Read Soil Moisture Measurements
-      // Soil_Moisture_handle *p_soil_moisture = Soil_Moisture_handle_get();
-      if (sensors_interface->p_soil_moisture->is_sensor_available) {
-        sensors_interface->p_soil_moisture->read_meassurement();
-      }
+    //         // Read Soil Moisture Measurements
+    //   // Soil_Moisture_handle *p_soil_moisture = Soil_Moisture_handle_get();
+    //   if (sensors_interface->p_soil_moisture->is_sensor_available) {
+    //     sensors_interface->p_soil_moisture->read_meassurement();
+    //   }
 
-      // Read Soil Moisture Measurements
-      // Brightness_Sensor_handle *p_brightness =
-      // Brightness_Sensor_handle_get();
+      // Read brightness Measurements
       if (sensors_interface->p_brightness->is_sensor_available) {
         sensors_interface->p_brightness->read_meassurement();
       }
 
     // Trigger UI update
-      user_interface_handle *p_ui_handle = user_interface_get();
-      p_ui_handle->display_new_update = true;
+//       user_interface_handle *p_ui_handle = user_interface_get();
+//       p_ui_handle->display_new_update = true;
 
 
-      if (p_ui_handle->display_new_update == true) {
-    p_ui_handle->print_new_update();
+//       if (p_ui_handle->display_new_update == true) {
+//     p_ui_handle->print_new_update();
    
-  }
+//   }
   uint16_t packet_len;
 
-  packet_len=2;
+  packet_len=6;
   volatile float temperature=sensors_interface->p_temp_hum->get_temp_value();
   volatile float hum=sensors_interface->p_temp_hum->get_hum_value();
-  volatile float latitude=40.382278f;
+  volatile float latitude=40.40120;
+  volatile float longitud=-3.63330;
+
+  volatile uint16_t light=0x24EB;
 
   volatile int16_t raw16_data;
-  raw16_data=sensors_interface->p_temp_hum->get_raw_temp_value();
+ 
 
   size_t pos = 0;
-  tx_buffer[pos++] = (raw16_data>>8) & 0xFF;
+  //temperatwure
+raw16_data=sensors_interface->p_temp_hum->get_raw_temp_value();
+tx_buffer[pos++] = (raw16_data>>8) & 0xFF;
 tx_buffer[pos++] = (raw16_data) & 0xFF;
-tx_buffer[pos++] = (*(uint32_t *) &latitude) & 0xff;
-tx_buffer[pos++] = ((*(uint32_t *) &latitude) >> 8) & 0xff;
-tx_buffer[pos++] = ((*(uint32_t *) &latitude) >> 16) & 0xff;
+//humidity
+raw16_data=sensors_interface->p_temp_hum->get_raw_hum_value();
+tx_buffer[pos++] = (raw16_data>>8) & 0xFF;
+tx_buffer[pos++] = (raw16_data) & 0xFF;
+//Colour
+raw16_data=sensors_interface->p_colour_sensor->get_clear();
+tx_buffer[pos++] = (raw16_data>>8) & 0xFF;
+tx_buffer[pos++] = (raw16_data) & 0xFF;
+
+raw16_data=sensors_interface->p_colour_sensor->get_red();
+tx_buffer[pos++] = (raw16_data>>8) & 0xFF;
+tx_buffer[pos++] = (raw16_data) & 0xFF;
+
+raw16_data=sensors_interface->p_colour_sensor->get_green();
+tx_buffer[pos++] = (raw16_data>>8) & 0xFF;
+tx_buffer[pos++] = (raw16_data) & 0xFF;
+
+raw16_data=sensors_interface->p_colour_sensor->get_blue();
+tx_buffer[pos++] = (raw16_data>>8) & 0xFF;
+tx_buffer[pos++] = (raw16_data) & 0xFF;
+
+//raw16_data=sensors_interface->p_brightness->get_raw_value();
+raw16_data=light;
+tx_buffer[pos++] = (raw16_data>>8) & 0xFF;
+tx_buffer[pos++] = (raw16_data) & 0xFF;
+
 tx_buffer[pos++] = ((*(uint32_t *) &latitude) >> 24) & 0xff;
-
+tx_buffer[pos++] = ((*(uint32_t *) &latitude) >> 16) & 0xff;
+tx_buffer[pos++] = ((*(uint32_t *) &latitude) >> 8) & 0xff;
+tx_buffer[pos++] = (*(uint32_t *) &latitude) & 0xff;
+tx_buffer[pos++] = ((*(uint32_t *) &longitud) >> 24) & 0xff;
+tx_buffer[pos++] = ((*(uint32_t *) &longitud) >> 16) & 0xff;
+tx_buffer[pos++] = ((*(uint32_t *) &longitud) >> 8) & 0xff;
+tx_buffer[pos++] = (*(uint32_t *) &longitud) & 0xff;
   
-
+return pos;
 
 }
 
@@ -196,14 +228,14 @@ int main(void)
 
     // sensors_thread.start(Thread_Sensor_meassurement); // Decleare another threat
 
-    payload_packaging();
+    
      
 
     
 
     //
     printf("\r\n*** Sensor Networks @ ETSIST, UPM ***\r\n"
-           "   Mbed (v%d.%d.%d) LoRaWAN example\r\n",
+           "   Mbed (v%d.%d.%d) LoRaWAN Project\r\n",
            MBED_MAJOR_VERSION, MBED_MINOR_VERSION, MBED_PATCH_VERSION);
 
     printf("\r\n DEV_EUI: ");
@@ -297,45 +329,45 @@ static void send_message()
     int16_t retcode;
     int32_t sensor_value;
 
-    if (ds1820.begin()) {
-        ds1820.startConversion();
-        sensor_value = ds1820.read();
-        printf("\r\n Dummy Sensor Value = %d \r\n", sensor_value);
-        ds1820.startConversion();
-    } else {
-        printf("\r\n No sensor found \r\n");
-        return;
-    }
+    // if (ds1820.begin()) {
+    //     ds1820.startConversion();
+    //     sensor_value = ds1820.read();
+    //     printf("\r\n Dummy Sensor Value = %d \r\n", sensor_value);
+    //     ds1820.startConversion();
+    // } else {
+    //     printf("\r\n No sensor found \r\n");
+    //     return;
+    // }
 
-    //Retrive meassurements
-    Sensors_interface *sensors_interface = sensors_interface_get();
-    sensors_interface=sensors_interface_get();
+//     //Retrive meassurements
+//     Sensors_interface *sensors_interface = sensors_interface_get();
+//     sensors_interface=sensors_interface_get();
 
-    if (sensors_interface->p_temp_hum->is_sensor_available) {
-        sensors_interface->p_temp_hum->read_meassurement();
-    }
-if (sensors_interface->p_gps->is_sensor_available) {
-    sensors_interface->p_gps->read_meassurement();
+//     if (sensors_interface->p_temp_hum->is_sensor_available) {
+//         sensors_interface->p_temp_hum->read_meassurement();
+//     }
+// if (sensors_interface->p_gps->is_sensor_available) {
+//     sensors_interface->p_gps->read_meassurement();
 
-    }
+//     }
 
-    // Trigger UI update
-      user_interface_handle *p_ui_handle = user_interface_get();
-      p_ui_handle->display_new_update = true;
+//     // Trigger UI update
+//       user_interface_handle *p_ui_handle = user_interface_get();
+//       p_ui_handle->display_new_update = true;
 
 
-      if (p_ui_handle->display_new_update == true) {
-    p_ui_handle->print_new_update();
+//       if (p_ui_handle->display_new_update == true) {
+//     p_ui_handle->print_new_update();
    
-  }
+//   }
 
-  packet_len=2;
-  volatile float temperature=sensors_interface->p_temp_hum->get_raw_temp_value();
-  temperature= sensors_interface->p_temp_hum->get_temp_value()*10000;
-  volatile int16_t raw16_data;
-  raw16_data=sensors_interface->p_temp_hum->get_raw_temp_value();
- *(tx_buffer)=(raw16_data>>8) & 0xFF;
- *(tx_buffer+1)=(raw16_data) & 0xFF;
+  packet_len=(uint16_t)payload_packaging();
+//   volatile float temperature=sensors_interface->p_temp_hum->get_raw_temp_value();
+//   temperature= sensors_interface->p_temp_hum->get_temp_value()*10000;
+//   volatile int16_t raw16_data;
+//   raw16_data=sensors_interface->p_temp_hum->get_raw_temp_value();
+//  *(tx_buffer)=(raw16_data>>8) & 0xFF;
+//  *(tx_buffer+1)=(raw16_data) & 0xFF;
 
 
     // packet_len = snprintf((char *) tx_buffer, sizeof(tx_buffer),
@@ -380,6 +412,24 @@ static void receive_message()
         printf("%02x ", rx_buffer[i]);
     }
     printf("\r\n");
+
+
+    user_interface_handle *p_ui_handle = user_interface_get();
+
+    if(rx_buffer[0]==0x52 && rx_buffer[1]==0x65 && rx_buffer[2]==0x64){
+//Red CMD
+p_ui_handle->set_RGB_colour(RGB_Red);
+
+    }else if(rx_buffer[0]==0x47 && rx_buffer[1]==0x72 && rx_buffer[2]==0x65 && rx_buffer[3]==0x65 && rx_buffer[4]==0x6E){
+//Green CMD
+p_ui_handle->set_RGB_colour(RGB_Green);
+    }else if(rx_buffer[0]==0x4F && rx_buffer[1]==0x46 && rx_buffer[2]==0x46){
+//OFF CMD
+
+p_ui_handle->set_RGB_colour(RGB_None);
+    }else{
+      printf(" CMD not registered \r\n");  
+    }
     
     memset(rx_buffer, 0, sizeof(rx_buffer));
 }

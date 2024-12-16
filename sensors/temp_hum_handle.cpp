@@ -123,9 +123,9 @@ void Temp_Hum_handle::read_meassurement() {
   p_comm_handle->_p_i2c_interface->read(0x40 << 1, data, 2);
 
   // Combine the two bytes into a single 16-bit value.
-  rawHumidity = (data[0] << 8) | data[1];
+  rawHumidity = (data[0] << 8) | (data[1]);
   // Convert the raw humidity value to a percentage.
-  hum_value = ((125.0 * rawHumidity) / 65536.0) - 6.0;
+  hum_value = ((125.0f * rawHumidity) / 65536.0) - 6.0;
 
   if (first_meassurement) {
     first_meassurement = false;

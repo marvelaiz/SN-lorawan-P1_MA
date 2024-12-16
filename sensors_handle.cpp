@@ -140,38 +140,46 @@ Sensors_interface *sensors_interface_get() { return sensors_interface; }
 
 char *Sensors_interface::sensors_interface_get_last_meassurements() {
 
-  if (sensors_interface->p_soil_moisture->is_sensor_available) {
+//   if (sensors_interface->p_soil_moisture->is_sensor_available) {
     // memcpy(measurements + strlen(measurements),
     //        sensors_interface->p_soil_moisture->get_data_to_print(),
     //        strlen(sensors_interface->p_soil_moisture->get_data_to_print()) +
     //        1);
 
-    memcpy(measurements,
-           sensors_interface->p_soil_moisture->get_data_to_print(),
-           strlen(sensors_interface->p_temp_hum->get_data_to_print()) + 1);
-  } else {
-    char msj[] = "Soil Moisture N/A \n";
-    // memcpy(measurements + strlen(measurements) + 1, msj, strlen(msj) + 1);
-    memcpy(measurements, msj, strlen(msj) + 1);
-  }
+//     memcpy(measurements,
+//            sensors_interface->p_soil_moisture->get_data_to_print(),
+//            strlen(sensors_interface->p_temp_hum->get_data_to_print()) + 1);
+//   } else {
+//     char msj[] = "Soil Moisture N/A \n";
+//     // memcpy(measurements + strlen(measurements) + 1, msj, strlen(msj) + 1);
+//     memcpy(measurements, msj, strlen(msj) + 1);
+//   }
 
   // Brightness Sensor
   Brightness_Sensor_handle *p_brightness = Brightness_Sensor_handle_get();
   if (sensors_interface->p_brightness->is_sensor_available) {
-    memcpy(measurements + strlen(measurements),
+    memcpy(measurements,
            sensors_interface->p_brightness->get_data_to_print(),
            strlen(sensors_interface->p_brightness->get_data_to_print()) + 1);
   } else {
     char msj[] = "Brightness N/A \n";
-    memcpy(measurements + strlen(measurements) + 1, msj, strlen(msj) + 1);
+    memcpy(measurements, msj, strlen(msj) + 1);
   }
 
   // GPS Sensor
 
+//   GPS_handle *p_gps = GPS_handle_get();
+
+//   if (sensors_interface->p_gps->is_sensor_available) {
+//     memcpy(measurements + strlen(measurements),
+//            sensors_interface->p_gps->get_data_to_print(),
+//            strlen(sensors_interface->p_gps->get_data_to_print()) + 1);
+//   }
+
   GPS_handle *p_gps = GPS_handle_get();
 
   if (sensors_interface->p_gps->is_sensor_available) {
-    memcpy(measurements + strlen(measurements),
+    memcpy(measurements+ strlen(measurements),
            sensors_interface->p_gps->get_data_to_print(),
            strlen(sensors_interface->p_gps->get_data_to_print()) + 1);
   }
@@ -245,13 +253,13 @@ void sensors_interface_init(I2C *p_i2c_interface, BufferedSerial *serial_port) {
   sensors_interface->p_gps = GPS_handle_get();
   sensors_interface->p_gps->make_meassurement();
 
-  //   GPS_handle *p_gps = GPS_handle_get();
-  //   correct_mea = p_gps->make_meassurement();
+//   //   GPS_handle *p_gps = GPS_handle_get();
+//   //   correct_mea = p_gps->make_meassurement();
 
-  // Init the Soil Moisture Sensor and class
-  Soil_Moisture_handle_init(soil_moisture_pin);
-  sensors_interface->p_soil_moisture = Soil_Moisture_handle_get();
-  sensors_interface->p_soil_moisture->make_meassurement();
+//   // Init the Soil Moisture Sensor and class
+//   Soil_Moisture_handle_init(soil_moisture_pin);
+//   sensors_interface->p_soil_moisture = Soil_Moisture_handle_get();
+//   sensors_interface->p_soil_moisture->make_meassurement();
 
 
   // Int Brightness_Sensor_handle

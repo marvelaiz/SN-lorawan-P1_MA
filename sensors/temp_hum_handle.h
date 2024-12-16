@@ -66,9 +66,9 @@ char formated_data[TEMP_HUM_DATA_MAX_LENGHT];
 private:
 uint8_t address;
 float temp_value;
-int16_t rawTemperature;
+uint16_t rawTemperature;
 float hum_value;
-int16_t rawHumidity;
+uint16_t rawHumidity;
 bool first_meassurement;
 float min_temp_value;
 float max_temp_value;

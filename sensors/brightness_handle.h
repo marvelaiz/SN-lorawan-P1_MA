@@ -20,6 +20,7 @@ Brightness_Sensor_handle(AnalogIn* pin);
 bool make_meassurement();
 void read_meassurement();
 float get_value();
+uint16_t get_raw_value();
 char* get_data_to_print();
 
 bool is_measurement_out_of_range();
@@ -30,6 +31,7 @@ char formated_data[BRIGHTNESS_SENSOR_DATA_MAX_LENGHT];
 private:
 AnalogIn* Signal_PIN;
 float value;
+uint16_t raw_value;
  
 };
 

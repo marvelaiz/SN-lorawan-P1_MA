@@ -76,6 +76,11 @@ Colours get_dominant_colour();
 void evaluate_dominant_colour();
 void evaluate_dominant_colour_in_period();
 void reset_mean_dominant_colour();
+uint16_t get_clear();
+uint16_t get_red();
+uint16_t get_green();
+uint16_t get_blue();
+
 
 bool is_sensor_available;
 char formated_data[COLOUR_DATA_MAX_LENGHT];
@@ -85,10 +90,10 @@ private:
 
 
 uint8_t address;
-int red;
-int blue;
-int green;
-int clear;
+uint16_t red;
+uint16_t blue;
+uint16_t green;
+uint16_t clear;
 int counter_red;
 int counter_blue;
 int counter_green;

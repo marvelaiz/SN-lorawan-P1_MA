@@ -36,6 +36,7 @@ void print_new_update();
 void print_stats();
 void print_msg(char* msg);
 void set_RGB_led_color();
+void set_RGB_colour(RGB_Color colour);
 bool display_new_update;
 BufferedSerial* _serial_port;
 //DigitalIn* red_pin;
@@ -44,7 +45,7 @@ BufferedSerial* _serial_port;
 InterruptIn* User_Btn; 
 
 
-char buffer[500];
+char buffer[600];
 };
 
 void user_interface_thread(); // Thread to monitor the sensor

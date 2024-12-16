@@ -123,7 +123,7 @@ bool Colour_sensor_handle::make_meassurement() {
   p_comm_handle->_p_i2c_interface->write(COLOUR_ADDR << 1, &cmd, 1, true);
   p_comm_handle->_p_i2c_interface->read(COLOUR_ADDR << 1, data, 2, false);
 
-  clear = ((int)data[1] << 8) | data[0];
+  clear = (data[1] << 8) | data[0];
 
   // Read Read
 
@@ -135,7 +135,7 @@ bool Colour_sensor_handle::make_meassurement() {
   p_comm_handle->_p_i2c_interface->write(COLOUR_ADDR << 1, &cmd, 1, true);
   p_comm_handle->_p_i2c_interface->read(COLOUR_ADDR << 1, data, 2, false);
 
-  red = ((int)data[1] << 8) | data[0];
+  red = (data[1] << 8) | data[0];
 
   // Read Green
 
@@ -146,7 +146,7 @@ bool Colour_sensor_handle::make_meassurement() {
   p_comm_handle->_p_i2c_interface->write(COLOUR_ADDR << 1, &cmd, 1, true);
   p_comm_handle->_p_i2c_interface->read(COLOUR_ADDR << 1, data, 2, false);
 
-  green = ((int)data[1] << 8) | data[0];
+  green = (data[1] << 8) | data[0];
 
   // Read Blue
 
@@ -157,7 +157,7 @@ bool Colour_sensor_handle::make_meassurement() {
   p_comm_handle->_p_i2c_interface->write(COLOUR_ADDR << 1, &cmd, 1, true);
   p_comm_handle->_p_i2c_interface->read(COLOUR_ADDR << 1, data, 2, false);
 
-  blue = ((int)data[1] << 8) | data[0];
+  blue = (data[1] << 8) | data[0];
 
   App *app = app_get();
 
@@ -185,6 +185,11 @@ bool Colour_sensor_handle::make_meassurement() {
 
   return true;
 }
+
+uint16_t Colour_sensor_handle::get_clear(){return clear;}
+uint16_t Colour_sensor_handle::get_red(){return red;}
+uint16_t Colour_sensor_handle::get_green(){return green;}
+uint16_t Colour_sensor_handle::get_blue(){return blue;}
 
 void Colour_sensor_handle::read_meassurement() {
 

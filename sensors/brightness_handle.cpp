@@ -10,6 +10,7 @@
 #include "brightness_handle.h"
 #include "user_interface.h"
 #include "sensors_handle.h"
+#include <cstdint>
 #include <cstdio>
 #include <cstring>
 
@@ -53,11 +54,19 @@ bool Brightness_Sensor_handle::make_meassurement() {
   return false;
 }
 
+uint16_t Brightness_Sensor_handle::get_raw_value(){
+    return raw_value;
+}
+
 void Brightness_Sensor_handle::read_meassurement() {
 
     Sensors_interface *p_comm_handle = sensors_interface_get();
     float sensorReading = Signal_PIN->read();
     value = (sensorReading*100)/BRIGHTNESS_SENSOR_RESOLUTION;
+    volatile float scaled= value*100;
+
+    raw_value= *((uint16_t*)&scaled);
+
     
 
     if (value > 100) {
