@@ -101,6 +101,49 @@ static LoRaWANInterface lorawan(radio);
  */
 static lorawan_app_callbacks_t callbacks;
 
+
+/**
+ * testing functions
+ */
+
+void payload_packaging(){
+
+    /*Testing the payload  packaging process*/
+
+    //Retrive meassurements
+    Sensors_interface *sensors_interface = sensors_interface_get();
+    sensors_interface=sensors_interface_get();
+
+    if (sensors_interface->p_temp_hum->is_sensor_available) {
+        sensors_interface->p_temp_hum->read_meassurement();
+    }
+if (sensors_interface->p_gps->is_sensor_available) {
+    sensors_interface->p_gps->read_meassurement();
+
+    }
+
+    // Trigger UI update
+      user_interface_handle *p_ui_handle = user_interface_get();
+      p_ui_handle->display_new_update = true;
+
+
+      if (p_ui_handle->display_new_update == true) {
+    p_ui_handle->print_new_update();
+   
+  }
+  uint16_t packet_len;
+
+  packet_len=2;
+  volatile float temperature=sensors_interface->p_temp_hum->get_temp_value();
+  
+  volatile int16_t raw16_data;
+  raw16_data=sensors_interface->p_temp_hum->get_raw_temp_value();
+ *(tx_buffer)=(raw16_data>>8) & 0xFF;
+ *(tx_buffer+1)=(raw16_data) & 0xFF;
+
+}
+
+
 /**
  * Default and configured device EUI, application EUI and application key
  */
@@ -113,6 +156,7 @@ static uint8_t APP_KEY[] = {0xf3, 0x1c, 0x2e, 0x8b, 0xc6, 0x71, 0x28, 0x1d,
 /**
  * Entry point for application
  */
+
 int main(void)
 {
 
@@ -122,6 +166,8 @@ int main(void)
     app_init(); // Int all app classes an interfaces
 
     // sensors_thread.start(Thread_Sensor_meassurement); // Decleare another threat
+
+    payload_packaging();
      
 
     
@@ -254,10 +300,17 @@ if (sensors_interface->p_gps->is_sensor_available) {
    
   }
 
+  packet_len=2;
+  volatile float temperature=sensors_interface->p_temp_hum->get_raw_temp_value();
+  temperature= sensors_interface->p_temp_hum->get_temp_value()*10000;
+  volatile int16_t raw16_data;
+  raw16_data=sensors_interface->p_temp_hum->get_raw_temp_value();
+ *(tx_buffer)=(raw16_data>>8) & 0xFF;
+ *(tx_buffer+1)=(raw16_data) & 0xFF;
 
 
-    packet_len = snprintf((char *) tx_buffer, sizeof(tx_buffer),
-                          "Dummy Sensor Value is %d", sensor_value);
+    // packet_len = snprintf((char *) tx_buffer, sizeof(tx_buffer),
+    //                       "Dummy Sensor Value is %d", (int32_t)sensors_interface->p_temp_hum->get_temp_value());
 
     retcode = lorawan.send(MBED_CONF_LORA_APP_PORT, tx_buffer, packet_len,
                            MSG_UNCONFIRMED_FLAG);

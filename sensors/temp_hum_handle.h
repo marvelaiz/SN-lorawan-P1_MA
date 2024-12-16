@@ -36,9 +36,12 @@ class Temp_Hum_handle{
 public:
 Temp_Hum_handle(uint8_t address); // contructor with sensor address
 bool make_meassurement();
+
 void read_meassurement();
 float get_temp_value();
 float get_hum_value();
+int16_t get_raw_temp_value();
+int16_t get_raw_hum_value();
 char* get_data_to_print();
 char *get_stats_to_print(char *buffer);
 bool is_temp_measurement_out_of_range();
@@ -52,18 +55,20 @@ Measurement_Validation hum_meassurement_state;
 
 bool is_sensor_available;
 char formated_data[TEMP_HUM_DATA_MAX_LENGHT];
-void  reset_min_max_mean();
-float get_min_temp_value();
-float get_max_temp_value();
-float get_mean_temp_value();
-float get_min_hum_value();
-float get_max_hum_value();
-float get_mean_hum_value();
+// void  reset_min_max_mean();
+// float get_min_temp_value();
+// float get_max_temp_value();
+// float get_mean_temp_value();
+// float get_min_hum_value();
+// float get_max_hum_value();
+// float get_mean_hum_value();
 
 private:
 uint8_t address;
 float temp_value;
+int16_t rawTemperature;
 float hum_value;
+int16_t rawHumidity;
 bool first_meassurement;
 float min_temp_value;
 float max_temp_value;

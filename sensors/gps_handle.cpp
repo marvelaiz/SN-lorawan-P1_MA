@@ -5,6 +5,7 @@
 // Implementation of the GPS_handle class.
 // Author: Mariana Arvelaiz
 // Date: Nov. 2024
+//  Last updated: Dec. 2025
 // Version: 1.0
 // ===========================================================================
 

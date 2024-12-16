@@ -65,22 +65,22 @@ char *Temp_Hum_handle::get_stats_to_print(char *buffer) {
   return buffer;
 }
 
-float Temp_Hum_handle::get_mean_temp_value() { return mean_temp_value; }
-float Temp_Hum_handle::get_mean_hum_value() { return mean_hum_value; }
-float Temp_Hum_handle::get_min_temp_value() { return min_temp_value; }
-float Temp_Hum_handle::get_min_hum_value() { return min_hum_value; }
-float Temp_Hum_handle::get_max_temp_value() { return max_temp_value; }
-float Temp_Hum_handle::get_max_hum_value() { return max_hum_value; }
+// float Temp_Hum_handle::get_mean_temp_value() { return mean_temp_value; }
+// float Temp_Hum_handle::get_mean_hum_value() { return mean_hum_value; }
+// float Temp_Hum_handle::get_min_temp_value() { return min_temp_value; }
+// float Temp_Hum_handle::get_min_hum_value() { return min_hum_value; }
+// float Temp_Hum_handle::get_max_temp_value() { return max_temp_value; }
+// float Temp_Hum_handle::get_max_hum_value() { return max_hum_value; }
 
-void Temp_Hum_handle::reset_min_max_mean() {
-  min_temp_value = temp_value;
-  max_temp_value = temp_value;
-  mean_temp_value = 0.0;
+// void Temp_Hum_handle::reset_min_max_mean() {
+//   min_temp_value = temp_value;
+//   max_temp_value = temp_value;
+//   mean_temp_value = 0.0;
 
-  min_hum_value = hum_value;
-  max_hum_value = hum_value;
-  mean_hum_value = 0.0;
-}
+//   min_hum_value = hum_value;
+//   max_hum_value = hum_value;
+//   mean_hum_value = 0.0;
+// }
 
 bool Temp_Hum_handle::make_meassurement() {
 
@@ -109,7 +109,7 @@ void Temp_Hum_handle::read_meassurement() {
   p_comm_handle->_p_i2c_interface->read(TEMP_HUM_ADDR << 1, data, 2);
 
   // Combine the two bytes into a single 16-bit value.
-  volatile int16_t rawTemperature = (data[0] << 8) | data[1];
+   rawTemperature = (data[0] << 8) | data[1];
   // Convert the raw temperature value to degrees Celsius.
   temp_value = ((175.72 * rawTemperature) / 65536.0) - 46.85;
 
@@ -123,7 +123,7 @@ void Temp_Hum_handle::read_meassurement() {
   p_comm_handle->_p_i2c_interface->read(0x40 << 1, data, 2);
 
   // Combine the two bytes into a single 16-bit value.
-  uint16_t rawHumidity = (data[0] << 8) | data[1];
+  rawHumidity = (data[0] << 8) | data[1];
   // Convert the raw humidity value to a percentage.
   hum_value = ((125.0 * rawHumidity) / 65536.0) - 6.0;
 
@@ -137,7 +137,7 @@ void Temp_Hum_handle::read_meassurement() {
 
   if (app->get_mode() == NORMAL_MODE ||app->get_mode() == ADVANCE_MODE) {
     if (p_comm_handle->counter == 0) {
-      reset_min_max_mean();
+    //   reset_min_max_mean();
     } else {
       // Update min, max and meaen values for temp
       min_temp_value = min(min_temp_value, temp_value);
@@ -186,6 +186,14 @@ void Temp_Hum_handle::power_up(){
 }
 void Temp_Hum_handle::power_off(){
    //sensor_vcc.write(0);
+
+}
+
+int16_t Temp_Hum_handle::get_raw_temp_value(){
+    return rawTemperature;
+}
+int16_t Temp_Hum_handle::get_raw_hum_value(){
+    return rawHumidity;
 
 }
 
