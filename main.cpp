@@ -121,6 +121,24 @@ if (sensors_interface->p_gps->is_sensor_available) {
     sensors_interface->p_gps->read_meassurement();
 
     }
+    // Read Colour Sensor Measurements
+      
+      if (sensors_interface->p_colour_sensor->is_sensor_available) {
+        sensors_interface->p_colour_sensor->read_meassurement();
+      }
+
+            // Read Soil Moisture Measurements
+      // Soil_Moisture_handle *p_soil_moisture = Soil_Moisture_handle_get();
+      if (sensors_interface->p_soil_moisture->is_sensor_available) {
+        sensors_interface->p_soil_moisture->read_meassurement();
+      }
+
+      // Read Soil Moisture Measurements
+      // Brightness_Sensor_handle *p_brightness =
+      // Brightness_Sensor_handle_get();
+      if (sensors_interface->p_brightness->is_sensor_available) {
+        sensors_interface->p_brightness->read_meassurement();
+      }
 
     // Trigger UI update
       user_interface_handle *p_ui_handle = user_interface_get();
@@ -135,11 +153,22 @@ if (sensors_interface->p_gps->is_sensor_available) {
 
   packet_len=2;
   volatile float temperature=sensors_interface->p_temp_hum->get_temp_value();
-  
+  volatile float hum=sensors_interface->p_temp_hum->get_hum_value();
+  volatile float latitude=40.382278f;
+
   volatile int16_t raw16_data;
   raw16_data=sensors_interface->p_temp_hum->get_raw_temp_value();
- *(tx_buffer)=(raw16_data>>8) & 0xFF;
- *(tx_buffer+1)=(raw16_data) & 0xFF;
+
+  size_t pos = 0;
+  tx_buffer[pos++] = (raw16_data>>8) & 0xFF;
+tx_buffer[pos++] = (raw16_data) & 0xFF;
+tx_buffer[pos++] = (*(uint32_t *) &latitude) & 0xff;
+tx_buffer[pos++] = ((*(uint32_t *) &latitude) >> 8) & 0xff;
+tx_buffer[pos++] = ((*(uint32_t *) &latitude) >> 16) & 0xff;
+tx_buffer[pos++] = ((*(uint32_t *) &latitude) >> 24) & 0xff;
+
+  
+
 
 }
 

@@ -15,11 +15,11 @@
 #include "mbed.h"
 #include "sensor_states.h"
 // #include "accelerometer_handle.h"
-// #include "colour_sensor_handle.h"
+#include "colour_sensor_handle.h"
 #include "temp_hum_handle.h"
 #include "gps_handle.h"
-// #include "soil_moisture_handle.h"
-// #include "brightness_handle.h"
+#include "soil_moisture_handle.h"
+#include "brightness_handle.h"
 
 #define MEASUREMENTS_MAX_LENGHT 200
 
@@ -51,10 +51,10 @@ class Sensors_interface{
     //Pointer to sensors handles
 
     Temp_Hum_handle* p_temp_hum;
-    // Soil_Moisture_handle* p_soil_moisture;
+    Soil_Moisture_handle* p_soil_moisture;
     GPS_handle* p_gps;
-    // Colour_sensor_handle* p_colour_sensor;
-    // Brightness_Sensor_handle* p_brightness;
+    Colour_sensor_handle* p_colour_sensor;
+    Brightness_Sensor_handle* p_brightness;
     // Accelerometer_handle* p_accel;
 
 
