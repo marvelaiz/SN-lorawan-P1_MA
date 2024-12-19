@@ -87,16 +87,16 @@ char *Sensors_interface::sensors_interface_get_last_meassurements() {
     memcpy(measurements + strlen(measurements) + 1, msj, strlen(msj) + 1);
   }
 
-//   //Accelerometer Sensor
-//   Accelerometer_handle *p_accelerometer = Accelerometer_handle_get();
-//   if (sensors_interface->p_accel->is_sensor_available) {
-//     memcpy(measurements + strlen(measurements),
-//            sensors_interface->p_accel->get_data_to_print(),
-//            strlen(sensors_interface->p_accel->get_data_to_print()) + 1);
-//   } else {
-//     char msj[] = "ACCELEROMETER N/A \n";
-//     memcpy(measurements + strlen(measurements) + 1, msj, strlen(msj) + 1);
-//   }
+  //Accelerometer Sensor
+  Accelerometer_handle *p_accelerometer = Accelerometer_handle_get();
+  if (sensors_interface->p_accel->is_sensor_available) {
+    memcpy(measurements + strlen(measurements),
+           sensors_interface->p_accel->get_data_to_print(),
+           strlen(sensors_interface->p_accel->get_data_to_print()) + 1);
+  } else {
+    char msj[] = "ACCELEROMETER N/A \n";
+    memcpy(measurements + strlen(measurements) + 1, msj, strlen(msj) + 1);
+  }
 
     // Temperature & HUM
     Temp_Hum_handle *p_temp_hum = Temp_Hum_handle_get();
@@ -132,21 +132,19 @@ void sensors_interface_init(I2C *p_i2c_interface, BufferedSerial *serial_port) {
   sensors_interface->p_colour_sensor->make_meassurement();
  
 
-//   // Initialize Accelerometer Sensor
-//   Accelerometer_handle_init(ACCEL_ADDR);
-//   sensors_interface->p_accel = Accelerometer_handle_get();
-//   sensors_interface->p_accel->make_meassurement();
+  // Initialize Accelerometer Sensor
+  Accelerometer_handle_init(ACCEL_ADDR);
+  sensors_interface->p_accel = Accelerometer_handle_get();
+  sensors_interface->p_accel->make_meassurement();
 
-  //   Accelerometer_handle *p_accelerometer = Accelerometer_handle_get();
-  //   correct_mea = p_accelerometer->make_meassurement();
+
 
   // Initialize GPS Sensor
   GPS_handle_init();
   sensors_interface->p_gps = GPS_handle_get();
   sensors_interface->p_gps->make_meassurement();
 
-//   //   GPS_handle *p_gps = GPS_handle_get();
-//   //   correct_mea = p_gps->make_meassurement();
+
 
   // Init the Soil Moisture Sensor and class
   Soil_Moisture_handle_init(soil_moisture_pin);
@@ -161,39 +159,3 @@ void sensors_interface_init(I2C *p_i2c_interface, BufferedSerial *serial_port) {
 
 }
 
-void Thread_Sensor_meassurement() {
-
-  while (true) {
-
-
-    if (sensors_interface->start_messurement_cycle) {
-
-  
-      // call funtion to make temperature meassurement
-
-      // Temp_Hum_handle *p_temp_hum = Temp_Hum_handle_get();
-      if (sensors_interface->p_temp_hum->is_sensor_available) {
-        sensors_interface->p_temp_hum->read_meassurement();
-      }
-      
-      // GPS
-      // GPS_handle *p_gps = GPS_handle_get();
-      sensors_interface->p_gps->read_meassurement();
-
-     
-
-      // Reset flags
-      sensors_interface->start_messurement_cycle = false;
-      sensors_interface->messurements_finished = true;
-      // Trigger UI update
-      user_interface_handle *p_ui_handle = user_interface_get();
-      p_ui_handle->display_new_update = true;
-
-
-      if (p_ui_handle->display_new_update == true) {
-    p_ui_handle->print_new_update();
-   
-  }
-    }
-  }
-}

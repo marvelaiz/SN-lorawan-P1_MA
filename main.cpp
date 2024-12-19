@@ -142,9 +142,9 @@ if (sensors_interface->p_gps->is_sensor_available) {
     // volatile uint16_t raw_ay=(uint16_t)y;
     // volatile uint16_t raw_az=(uint16_t)z;
 
-    //   if (sensors_interface->p_accel->is_sensor_available) {
-    //     sensors_interface->p_accel->read_meassurement();
-    //   }
+      if (sensors_interface->p_accel->is_sensor_available) {
+        sensors_interface->p_accel->read_meassurement();
+      }
 
     // Trigger UI update
       user_interface_handle *p_ui_handle = user_interface_get();
@@ -166,12 +166,14 @@ if (sensors_interface->p_gps->is_sensor_available) {
 
   volatile int16_t raw16_data;
 
-  float x=0.045;
-    x=x*1000;
-     float y=0.0024;
-    y=y*1000;
-     float z =9.81345;
-    z=z*1000;
+
+
+// //   volatile uint16_t x=sensors_interface->p_accel->get_acc_x_value()*1000.0;
+// //   volatile int16_t xx=(int16_t)x;
+//      float y=0.0024;
+//     y=y*1000;
+//      float z =9.81345;
+//     z=z*1000;
 
     
  
@@ -218,17 +220,17 @@ tx_buffer[pos++] = (raw16_data>>8) & 0xFF;
 tx_buffer[pos++] = (raw16_data) & 0xFF;
 
 //ax
-raw16_data=(uint16_t)x;
+raw16_data=sensors_interface->p_accel->get_acc_x_value()*1000.0;
 tx_buffer[pos++] = (raw16_data>>8) & 0xFF;
 tx_buffer[pos++] = (raw16_data) & 0xFF;
 
 //ay
-raw16_data=(uint16_t)y;
+raw16_data=sensors_interface->p_accel->get_acc_y_value()*1000.0;
 tx_buffer[pos++] = (raw16_data>>8) & 0xFF;
 tx_buffer[pos++] = (raw16_data) & 0xFF;
 
 //az
-raw16_data=(uint16_t)z;
+raw16_data=sensors_interface->p_accel->get_acc_z_value()*1000.0;
 tx_buffer[pos++] = (raw16_data>>8) & 0xFF;
 tx_buffer[pos++] = (raw16_data) & 0xFF;
 

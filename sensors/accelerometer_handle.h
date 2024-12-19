@@ -47,11 +47,11 @@ Accelerometer_handle(uint8_t address); // contructor with sensor address
 bool make_meassurement();
 void read_meassurement();
 float get_acc_x_value();
-uint16_t get_raw_x_value();
+int16_t get_raw_x_value();
 float get_acc_y_value();
-uint16_t get_raw_y_value();
+int16_t get_raw_y_value();
 float get_acc_z_value();
-uint16_t get_raw_z_value();
+int16_t get_raw_z_value();
 char* get_data_to_print();
 
 Measurement_Validation meassurement_state;
@@ -65,13 +65,10 @@ uint8_t address;
 float acc_x_value;
 float acc_y_value;
 float acc_z_value;
-uint16_t raw_x_value;
-uint16_t raw_y_value;
-uint16_t raw_z_value;
+int16_t raw_x_value;
+int16_t raw_y_value;
+int16_t raw_z_value;
 
-float acc_x_value_m_s;  //Value in m/s
-float acc_y_value_m_s;  //Value in m/s
-float acc_z_value_m_s;  //Value in m/s
 
 
 
