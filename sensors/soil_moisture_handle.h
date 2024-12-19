@@ -6,7 +6,7 @@
 #include "sensor_states.h"
 //#include "user_interface.h"
 
-#define SOIL_MOISTURE_DATA_MAX_LENGHT 40
+#define SOIL_MOISTURE_DATA_MAX_LENGHT 30
 #define SOIL_MOISTURE_RESOLUTION 3.3  //Supply voltage value (range 0.0V - Max Value)
 
 #define SOIL_MOISTURE_MAX_VALUE 80
@@ -19,6 +19,7 @@ public:
 Soil_Moisture_handle(AnalogIn pin);
 bool make_meassurement();
 void read_meassurement();
+uint16_t get_raw_value();
 float get_soil_moisture_value();
 char* get_data_to_print();
 void  reset_min_max_mean();
@@ -35,9 +36,7 @@ char formated_data[SOIL_MOISTURE_DATA_MAX_LENGHT];
 private:
 AnalogIn Signal_PIN;
 float value;
-float min_value;
-float max_value;
-float mean_value;
+uint16_t raw_value;
 
 };
 

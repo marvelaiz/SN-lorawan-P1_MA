@@ -14,7 +14,7 @@
 #include <cstdint>
 #include "mbed.h"
 #include "sensor_states.h"
-// #include "accelerometer_handle.h"
+#include "accelerometer_handle.h"
 #include "colour_sensor_handle.h"
 #include "temp_hum_handle.h"
 #include "gps_handle.h"
@@ -55,7 +55,7 @@ class Sensors_interface{
     GPS_handle* p_gps;
     Colour_sensor_handle* p_colour_sensor;
     Brightness_Sensor_handle* p_brightness;
-    // Accelerometer_handle* p_accel;
+    Accelerometer_handle* p_accel;
 
 
 

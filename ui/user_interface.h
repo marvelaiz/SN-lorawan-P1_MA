@@ -35,20 +35,16 @@ user_interface_handle(BufferedSerial* serial_port); // contructor with sensor ad
 void print_new_update();
 void print_stats();
 void print_msg(char* msg);
-void set_RGB_led_color();
 void set_RGB_colour(RGB_Color colour);
 bool display_new_update;
 BufferedSerial* _serial_port;
-//DigitalIn* red_pin;
-//DigitalIn* green_pin;
-//DigitalIn* blue_pin;
+
 InterruptIn* User_Btn; 
 
 
-char buffer[600];
+char buffer[350];
 };
 
-void user_interface_thread(); // Thread to monitor the sensor
 void user_interface_init(BufferedSerial* serial_port); // Create and initialize the whole interface
 user_interface_handle* user_interface_get();
 

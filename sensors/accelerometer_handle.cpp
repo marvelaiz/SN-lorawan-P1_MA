@@ -20,66 +20,50 @@
 // Global instance
 Accelerometer_handle *accelerometer_handle;
 
-// void readRegs(int addr, uint8_t *data, int len) {
-//     // Write the address we want to read from
-//     char t[1] = { (char)addr };
-//     i2c.write(MMA8451_I2C_ADDRESS, t, 1, true); // true = keep the connection
-//     open
 
-//     // Read the specified number of bytes from the accelerometer into data
-//     buffer i2c.read(MMA8451_I2C_ADDRESS, (char *)data, len);
-// }
+uint8_t getWhoAmI() {
+    Sensors_interface *p_comm_handle = sensors_interface_get();
 
-// // Function to write data to a register (e.g., for configuration)
-// void writeRegs(uint8_t *data, int len) {
-//     // Write the data array to the accelerometer
-//     i2c.write(MMA8451_I2C_ADDRESS, (char *)data, len);
-// }
+    uint8_t data[2] = { REG_CTRL_REG, 0x01 };
 
-// Function to get the value of the WHO_AM_I register, which identifies the
-// sensor char getWhoAmI() {
-//     char who_am_i = 0;
-//     // Read the WHO_AM_I register value (unique identifier for MMA8451)
-//     char reg[1] = { (char)REG_WHO_AM_I };
-//     Sensors_interface *p_comm_handle = sensors_interface_get();
-//     p_comm_handle->_p_i2c_interface->write(ACCEL_I2C_ADDR, reg, 1, true); //
-//     true = keep the connection open
+    // Write the data array to the accelerometer
+    i2c.write(MMA8451_I2C_ADDRESS, (char *)data, 2);
+    uint8_t who_am_i[1];
+    char cmd;
 
-//     // Read the specified number of bytes from the accelerometer into data
-//     buffer p_comm_handle->_p_i2c_interface->read(ACCEL_I2C_ADDR, &who_am_i,
-//     1);
+    cmd = (char)REG_WHO_AM_I;
 
-//     return who_am_i;
-// }
+    
+    // Read the WHO_AM_I register value (unique identifier for MMA8451)
+    p_comm_handle->_p_i2c_interface->.write(ACCEL_I2C_ADDR, &cmd, 1, true); // true = keep the connection open
+    // Read the specified number of bytes from the accelerometer into data buffer
+    p_comm_handle->_p_i2c_interface->.read(ACCEL_I2C_ADDR, (char*)who_am_i, 1);
+    //readRegs(REG_WHO_AM_I, &who_am_i, 1);
+    return *who_am_i;
+}
+
 // Function to initialize the MMA8451 accelerometer and check if it’s connected
 bool initMMA8451() {
   Sensors_interface *p_comm_handle = sensors_interface_get();
-  char cmd = REG_WHO_AM_I;
-  char who_am_i = 0;
+  char cmd[2];
+  volatile char who_am_i = 0;
+  char data[1] = {0};
+//    char data = 0x01; // Command to set accelerometer to active mode
 
+  // Send command to activate the accelerometer
+  cmd[0]=REG_CTRL_REG;
+  cmd[1]=0x01;
+int valid=p_comm_handle->_p_i2c_interface->write(ACCEL_I2C_ADDR, cmd, 2);
+
+//Test the device
+// cmd[0]=REG_WHO_AM_I;
+//   p_comm_handle->_p_i2c_interface->write(ACCEL_ADDR << 1, cmd, 1, true);
+//   p_comm_handle->_p_i2c_interface->read(ACCEL_ADDR << 1, data, 1, false);
   // Read the WHO_AM_I register value (unique identifier for MMA8451)
-  char reg[1] = {(char)REG_WHO_AM_I};
-
-  p_comm_handle->_p_i2c_interface->write(
-      ACCEL_I2C_ADDR, &cmd, 1, true); // true = keep the connection open
-  // Read the specified number of bytes from the accelerometer into data buffer
-  p_comm_handle->_p_i2c_interface->read(ACCEL_I2C_ADDR, &who_am_i, 1);
-
-//   char timing_register[2] = {MMA8451_XYZ_DATA_CFG,
-//                              0x02};
-
-  
-
-//   p_comm_handle->_p_i2c_interface->write(ACCEL_I2C_ADDR, timing_register, 2, true);
 
 
-  // p_comm_handle->_p_i2c_interface->write(ACCEL_ADDR << 1, &cmd, 1);
-  // p_comm_handle->_p_i2c_interface->read(ACCEL_ADDR << 1, &who_am_i, 1);
 
-  // Send WHO_AM_I command and read response to verify the device ID
-  // if (p_comm_handle->_p_i2c_interface->write(0x1D << 1, &cmd, 1) == 0 &&
-  //     p_comm_handle->_p_i2c_interface->read(0x1D << 1, &who_am_i, 1) == 0) {
-  if (who_am_i == 0x1A) {
+  if (valid==0) {
     // return who_am_i == 0x1A; // 0x1A is the device ID for MMA8451
     return true;
   }
@@ -108,14 +92,23 @@ bool Accelerometer_handle::make_meassurement() {
   char data = 0x01; // Command to set accelerometer to active mode
 
   // Send command to activate the accelerometer
-   char cmd[2] = {MMA8451_XYZ_DATA_CFG, 0x00};
-  p_comm_handle->_p_i2c_interface->write(ACCEL_I2C_ADDR, cmd, 2);
-  cmd[0]=REG_CTRL_REG;
-  cmd[1]=0x01;
+   char cmd[2];
+  
+//   cmd[0]=REG_CTRL_REG;
+//   cmd[1]=0x01;
+// p_comm_handle->_p_i2c_interface->write(ACCEL_I2C_ADDR, cmd, 2);
+
+  
+
 
   if (p_comm_handle->_p_i2c_interface->write(ACCEL_I2C_ADDR, cmd, 2) == 0) {
     // is_sensor_available = true;
+
+    cmd[0]=MMA8451_XYZ_DATA_CFG;
+  cmd[1]=0x00;
+  p_comm_handle->_p_i2c_interface->write(ACCEL_I2C_ADDR, cmd, 2);
     return true;
+
   }
   // is_sensor_available = false;
   return false;
@@ -124,98 +117,53 @@ bool Accelerometer_handle::make_meassurement() {
 // Read raw data from the accelerometer for each axis
 void Accelerometer_handle::read_meassurement() {
   Sensors_interface *p_comm_handle = sensors_interface_get();
-  char data[2];
+  char data[6];
   char cmd;
 
   // Read X-axis data
   cmd = REG_OUT_X_MSB;
   p_comm_handle->_p_i2c_interface->write(ACCEL_I2C_ADDR, &cmd, 1, true);
-  p_comm_handle->_p_i2c_interface->read(ACCEL_I2C_ADDR, data, 2);
-  int16_t raw_x = (data[0] << 8) | (data[1] );
-//   if (raw_x > UINT14_MAX / 2)
-//     raw_x -= UINT14_MAX;
-raw_x>>=2;
-  //acc_x_value = ((float)raw_x) / 4096.0f;
+  p_comm_handle->_p_i2c_interface->read(ACCEL_I2C_ADDR, data, 6);
+   raw_x_value = (data[0] << 8) | (data[1] );
+  raw_y_value = (data[2] << 8) | (data[3] );
+  raw_z_value = (data[4] << 8) | (data[5] );
+
+
+  if (raw_x_value & 0x8000) {
+        acc_x_value = -(~(raw_x_value & 0x7FFF));
+    }
+
+if (raw_y_value & 0x8000) {
+        acc_y_value = -(~raw_y_value & 0x7FFF);
+    }
+
+    if (raw_z_value & 0x8000) {
+        acc_z_value = -(~raw_z_value & 0x7FFF);
+    }
+    // ... similar for y_raw and z_raw
+
+    // Convert to g-force (assuming 2g full-scale range)
+    acc_x_value = acc_x_value * 2.0f / 4096.0f;
+    acc_y_value = acc_y_value * 2.0f / 4096.0f;
+    acc_z_value = acc_z_value * 2.0f / 4096.0f;
+
   acc_x_value_m_s = acc_x_value * G_COVERSION_FACTOR;
-
-  // Read Y-axis data
-  cmd = REG_OUT_Y_MSB;
-  p_comm_handle->_p_i2c_interface->write(ACCEL_I2C_ADDR, &cmd, 1);
-  p_comm_handle->_p_i2c_interface->read(ACCEL_I2C_ADDR, data, 2);
-  volatile int16_t raw_y = (data[0] << 8) | (data[1] );
-//   if (raw_y > UINT14_MAX / 2)
-//     raw_y -= UINT14_MAX;
-raw_y>>=2;
-  //acc_y_value = static_cast<float>(raw_y) / 4096.0f;
   acc_y_value_m_s = acc_y_value * G_COVERSION_FACTOR;
-
-  // Read Z-axis data
-  cmd = REG_OUT_Z_MSB;
-  p_comm_handle->_p_i2c_interface->write(ACCEL_I2C_ADDR, &cmd, 1);
-  p_comm_handle->_p_i2c_interface->read(ACCEL_I2C_ADDR, data, 2);
-  int16_t raw_z = (data[0] << 8) | (data[1] );
-  raw_z>>=2;
-//   if (raw_z > UINT14_MAX / 2)
-//     raw_z -= UINT14_MAX;
-  //acc_z_value = static_cast<float>(raw_z) / 4096.0f;
   acc_z_value_m_s = acc_z_value * G_COVERSION_FACTOR;
 
 
-  App* app=app_get();
 
-
-  if(app->get_mode() == NORMAL_MODE ||app->get_mode() == ADVANCE_MODE){
-        if (app->counter == 0) {
-        reset_min_max_mean();
-        }else {
-            // Update min, max and maean values of x
-            min_acc_x_value = min(min_acc_x_value, acc_x_value_m_s);
-            max_acc_x_value = max(min_acc_x_value, acc_x_value_m_s);
-            mean_acc_x_value = mean_acc_x_value + (acc_x_value_m_s - mean_acc_x_value) / p_comm_handle->counter;
-
-            // Update min, max and maean values of y
-            min_acc_y_value = min(min_acc_y_value, acc_y_value_m_s);
-            max_acc_y_value = max(min_acc_y_value, acc_y_value_m_s);
-            mean_acc_y_value = mean_acc_y_value + (acc_y_value_m_s - mean_acc_y_value) / p_comm_handle->counter;
-
-            // Update min, max and maean values of z
-            min_acc_z_value = min(min_acc_z_value, acc_z_value_m_s);
-            max_acc_z_value = max(min_acc_z_value, acc_z_value_m_s);
-            mean_acc_z_value = mean_acc_z_value + (acc_z_value_m_s - mean_acc_z_value) / p_comm_handle->counter;
-
-            
-        }
-    }
 }
 
 // Get individual axis values
 float Accelerometer_handle::get_acc_x_value() { return acc_x_value; }
 float Accelerometer_handle::get_acc_y_value() { return acc_y_value; }
 float Accelerometer_handle::get_acc_z_value() { return acc_z_value; }
+uint16_t Accelerometer_handle::get_raw_x_value(){return raw_x_value;}
+uint16_t Accelerometer_handle::get_raw_y_value(){return raw_y_value;}
+uint16_t Accelerometer_handle::get_raw_z_value(){return raw_z_value;}
 
 
-float Accelerometer_handle::get_min_acc_x_value() { return min_acc_x_value; }
-float Accelerometer_handle::get_min_acc_y_value() { return min_acc_y_value; }
-float Accelerometer_handle::get_min_acc_z_value() { return min_acc_z_value; }
-float Accelerometer_handle::get_max_acc_x_value() { return max_acc_x_value; }
-float Accelerometer_handle::get_max_acc_y_value() { return max_acc_y_value; }
-float Accelerometer_handle::get_max_acc_z_value() { return max_acc_z_value; }
-float Accelerometer_handle::get_mean_acc_x_value() { return mean_acc_x_value; }
-float Accelerometer_handle::get_mean_acc_y_value() { return mean_acc_y_value; }
-float Accelerometer_handle::get_mean_acc_z_value() { return mean_acc_z_value; }
-
-void Accelerometer_handle::reset_min_max_mean() {
- min_acc_x_value = acc_x_value;
- min_acc_y_value = acc_y_value;
- min_acc_z_value = acc_z_value;
- max_acc_x_value = acc_x_value;
- max_acc_y_value = acc_y_value;
- max_acc_z_value = acc_z_value;
- mean_acc_x_value = 0.0;
- mean_acc_y_value = 0.0;
- mean_acc_z_value = 0.0;
-
-}
 
 bool Accelerometer_handle::is_measurement_out_of_range() {
   if (acc_x_value_m_s > ACCEL_X_MAX_VALUE_M_S2 ||

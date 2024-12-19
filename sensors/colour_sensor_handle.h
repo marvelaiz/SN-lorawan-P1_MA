@@ -46,7 +46,7 @@
 
 //MACROS
 #define COLOUR_ADDR TCS3472_ADDRESS
-#define COLOUR_DATA_MAX_LENGHT 75
+#define COLOUR_DATA_MAX_LENGHT 60
 
 #define DOMINANT_COLOUR_RED "Red is Dominant"
 #define DOMINANT_COLOUR_GREEN "Green is Dominant"
@@ -73,9 +73,6 @@ void read_meassurement();
 void* _Sensor_Led;
 char* get_data_to_print();
 Colours get_dominant_colour();
-void evaluate_dominant_colour();
-void evaluate_dominant_colour_in_period();
-void reset_mean_dominant_colour();
 uint16_t get_clear();
 uint16_t get_red();
 uint16_t get_green();
@@ -94,10 +91,6 @@ uint16_t red;
 uint16_t blue;
 uint16_t green;
 uint16_t clear;
-int counter_red;
-int counter_blue;
-int counter_green;
-int counter_clear;
 
 
 };

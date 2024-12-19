@@ -4,14 +4,17 @@
 #include <cstdint>
 
 
-#define GPS_DATA_MAX_LENGHT 110
+#define GPS_DATA_MAX_LENGHT 40
 //Class
 class GPS_handle{
 
 public:
 GPS_handle(); // contructor with sensor address
 bool make_meassurement();
+bool is_measurement_valid();
 void read_meassurement();
+float get_latitude();
+float get_longitude();
 void parseGPGGA(char* gpgga);
 
 

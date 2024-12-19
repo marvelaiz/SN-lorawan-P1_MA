@@ -47,64 +47,33 @@ bool initTCS34725() {
 // Class methods
 
 Colour_sensor_handle::Colour_sensor_handle(uint8_t address)
-    : address(address), is_sensor_available(false), red(0), green(0), blue(0),
-      counter_blue(0), counter_clear(0), counter_green(0), counter_red(0) {}
+    : address(address), is_sensor_available(false), red(0), green(0), blue(0) {}
 
 char *Colour_sensor_handle::get_data_to_print() {
   // This funtion configure the format in which the sensors reading is going to
   // be printed
-  evaluate_dominant_colour();
-  if(dominant_colour==RED){
-      snprintf(formated_data, sizeof(formated_data),
-           "COLOUR: Red:%d Green: %d Blue: %d, Dominant color:%s\n", red, green, blue, DOMINANT_COLOUR_RED);
 
-  }else if(dominant_colour==BLUE){
       snprintf(formated_data, sizeof(formated_data),
-           "COLOUR: Red:%d Green: %d Blue: %d, Dominant color:%s\n", red, green, blue, DOMINANT_COLOUR_BLUE);
+           "COLOUR: Red:%d Green: %d Blue: %d\n", red, green, blue);
 
-  }else if(dominant_colour==GREEN){
-      snprintf(formated_data, sizeof(formated_data),
-           "COLOUR: Red:%d Green: %d Blue: %d, Dominant color:%s\n", red, green, blue, DOMINANT_COLOUR_GREEN);
-
-  }
   
   return formated_data;
 }
 
-void Colour_sensor_handle::evaluate_dominant_colour() {
-  if (green > blue && green > red) {
-    dominant_colour = GREEN;
-  } else if (blue > green & blue > red) {
-    dominant_colour = BLUE;
-  } else if (red > green & red > blue) {
-    dominant_colour = RED;
-  } else {
-    dominant_colour = NONE;
-  }
-}
+// void Colour_sensor_handle::evaluate_dominant_colour() {
+//   if (green > blue && green > red) {
+//     dominant_colour = GREEN;
+//   } else if (blue > green & blue > red) {
+//     dominant_colour = BLUE;
+//   } else if (red > green & red > blue) {
+//     dominant_colour = RED;
+//   } else {
+//     dominant_colour = NONE;
+//   }
+// }
 
-void Colour_sensor_handle::evaluate_dominant_colour_in_period() {
 
-  if (counter_green >= counter_blue && counter_green >= counter_red) {
-    dominant_colour = GREEN;
 
-  } else if (counter_blue >= counter_green && counter_blue >= counter_red) {
-    dominant_colour = BLUE;
-  } else if (counter_red >= counter_green && counter_red >= counter_blue) {
-    dominant_colour = RED;
-  } else {
-    dominant_colour = NONE;
-  }
-
-  reset_mean_dominant_colour();
-}
-
-void Colour_sensor_handle::reset_mean_dominant_colour() {
-  counter_clear = 0;
-  counter_blue = 0;
-  counter_green = 0;
-  counter_red = 0;
-}
 
 Colours Colour_sensor_handle::get_dominant_colour() { return dominant_colour; }
 
@@ -159,29 +128,6 @@ bool Colour_sensor_handle::make_meassurement() {
 
   blue = (data[1] << 8) | data[0];
 
-  App *app = app_get();
-
-  if (app->get_mode() == NORMAL_MODE ||app->get_mode() == ADVANCE_MODE) {
-
-    if (p_comm_handle->counter == 0) {
-      
-    } else {
-      // Update counter values
-      if (green > blue && green > red) {
-        // dominant_colour = GREEN;
-        counter_green++;
-      } else if (blue > green & blue > red) {
-        // dominant_colour = BLUE;
-        counter_blue++;
-      } else if (red > green & red > blue) {
-        dominant_colour = RED;
-        counter_red++;
-      } else {
-        counter_clear++;
-      }
-      
-    }
-  }
 
   return true;
 }
@@ -245,7 +191,7 @@ void Colour_sensor_handle::read_meassurement() {
 
   Sensor_Led = LED_LOW;
 
-  evaluate_dominant_colour();
+  
 }
 
 // External Funtions

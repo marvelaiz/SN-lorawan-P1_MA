@@ -55,31 +55,25 @@ bool Soil_Moisture_handle::make_meassurement() {
   return false;
 }
 
+uint16_t Soil_Moisture_handle::get_raw_value(){
+    return raw_value;
+}
+
 void Soil_Moisture_handle::read_meassurement() {
 
   Sensors_interface *p_comm_handle = sensors_interface_get();
   float sensorReading = Signal_PIN.read();
   value = (sensorReading * 100) / SOIL_MOISTURE_RESOLUTION;
+  volatile float scaled= value*100;
+
+    raw_value= (uint16_t)scaled;
 
   if (value > 100) {
     value = 100;
   } else if (value < 0) {
     value = 0;
   }
-  App *app=app_get();
-
-  if (app->get_mode() == NORMAL_MODE ||app->get_mode() == ADVANCE_MODE) {
-    if (p_comm_handle->counter == 0) {
-      reset_min_max_mean();
-    } else {
-      // Update min, max and meaen values for temp
-      // Update min and max values
-            min_value = min(min_value, value);
-            max_value = max(max_value, value);
-            mean_value = mean_value + (value - mean_value) / p_comm_handle->counter; 
-
-    }
-  }
+  
 }
 float Soil_Moisture_handle::get_soil_moisture_value() { return value; }
 
@@ -92,14 +86,7 @@ bool Soil_Moisture_handle::is_measurement_out_of_range() {
     return false;
   }
 }
-void Soil_Moisture_handle::reset_min_max_mean() {
-    min_value = value;
-    max_value = value;
-    mean_value = 0.0;
-}
-float Soil_Moisture_handle :: get_min_value() { return min_value; }
-float Soil_Moisture_handle :: get_max_value() { return max_value; }
-float Soil_Moisture_handle :: get_mean_value() { return mean_value; }
+
 
 // External Funtions
 

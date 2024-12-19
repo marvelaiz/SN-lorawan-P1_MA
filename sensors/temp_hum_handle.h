@@ -43,7 +43,6 @@ float get_hum_value();
 int16_t get_raw_temp_value();
 int16_t get_raw_hum_value();
 char* get_data_to_print();
-char *get_stats_to_print(char *buffer);
 bool is_temp_measurement_out_of_range();
 bool is_hum_measurement_out_of_range();
 void power_up();

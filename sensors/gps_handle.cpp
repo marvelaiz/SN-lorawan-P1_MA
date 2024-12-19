@@ -17,20 +17,18 @@
 #include <string.h>
 
 GPS_handle *gps_handle;
-
+DigitalOut gps_sensor_VCC(PB_12);
 // Class methods
 
 GPS_handle::GPS_handle()
-    : is_sensor_available(false), hour(0), minutes(0), seconds(0) {}
+    : is_sensor_available(false), hour(0), minutes(0), seconds(0) , latitude(1000.0), longitude(1000.0){}
 
 char *GPS_handle::get_data_to_print() {
   // This funtion configure the format in which the sensors reading is going to
   // be printed
   snprintf(formated_data, sizeof(formated_data),
-           "GPS: #Sats: %d, Lat(UTC): %.7f,%c Long(UTC): -%.7f %c, Altitude: %.1fm, "
-           "GPS_time: %02d:%02d:%02d\n",
-           num_satellites, latitude, latDirection, longitude,longDirection, altitude, hour, minutes,
-           seconds);
+           "GPS:Lat(UTC): %.7f,%c Long(UTC): -%.7f %c, Altitude: %.1fm, \n",
+           latitude, latDirection, longitude,longDirection, altitude);
   return formated_data;
 }
 
@@ -116,6 +114,17 @@ void GPS_handle::parseGPGGA(char *gpgga) {
 }
 
 bool GPS_handle::make_meassurement() { return false; }
+float GPS_handle::get_latitude(){return latitude;}
+float GPS_handle::get_longitude(){return longitude;}
+bool GPS_handle::is_measurement_valid(){
+    if(latitude>90 || longitude>180 ||latitude<-90 ||longitude<-180){
+        return false;
+    }else{
+        return true;
+    }
+
+
+}
 
 void GPS_handle::read_meassurement() {
 
@@ -174,6 +183,9 @@ void GPS_handle::read_meassurement() {
         fieldIndex++;
       }
     }
+  }else{
+      is_sensor_available=false;
+
   }
 }
 // External Funtions
@@ -181,6 +193,7 @@ void GPS_handle::read_meassurement() {
 GPS_handle *GPS_handle_get() { return gps_handle; }
 
 void GPS_handle_init() {
+    gps_sensor_VCC=1;
   // Allocate the pointer
   gps_handle = new GPS_handle();
   memset(gps_handle->formated_data, '\0', sizeof(gps_handle->formated_data));

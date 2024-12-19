@@ -49,38 +49,7 @@ char *Temp_Hum_handle::get_data_to_print() {
   return formated_data;
 }
 
-char *Temp_Hum_handle::get_stats_to_print(char *buffer) {
-  
 
-  //   memcpy(buffer+strlen(buffer),
-  //   sensors_interface->p_temp_hum->get_stats_to_print(),
-  //          strlen(buffer) +1);
-
-  snprintf(buffer, sizeof(buffer),
-           "Temperature and Humidity Stats \n Temp Mean: %.2f°C | Temp "
-           "Min:%.2f°C | Temp Max: %.2f°C\nHumidity Mean: %.2f%% | Humidity "
-           "Min: %.2f%% | Humidity Max: %.2f%%\n",
-           mean_temp_value, min_temp_value, max_temp_value, mean_hum_value,
-           min_hum_value, max_hum_value);
-  return buffer;
-}
-
-// float Temp_Hum_handle::get_mean_temp_value() { return mean_temp_value; }
-// float Temp_Hum_handle::get_mean_hum_value() { return mean_hum_value; }
-// float Temp_Hum_handle::get_min_temp_value() { return min_temp_value; }
-// float Temp_Hum_handle::get_min_hum_value() { return min_hum_value; }
-// float Temp_Hum_handle::get_max_temp_value() { return max_temp_value; }
-// float Temp_Hum_handle::get_max_hum_value() { return max_hum_value; }
-
-// void Temp_Hum_handle::reset_min_max_mean() {
-//   min_temp_value = temp_value;
-//   max_temp_value = temp_value;
-//   mean_temp_value = 0.0;
-
-//   min_hum_value = hum_value;
-//   max_hum_value = hum_value;
-//   mean_hum_value = 0.0;
-// }
 
 bool Temp_Hum_handle::make_meassurement() {
 

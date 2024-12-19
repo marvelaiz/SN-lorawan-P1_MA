@@ -65,7 +65,7 @@ void Brightness_Sensor_handle::read_meassurement() {
     value = (sensorReading*100)/BRIGHTNESS_SENSOR_RESOLUTION;
     volatile float scaled= value*100;
 
-    raw_value= *((uint16_t*)&scaled);
+    raw_value= (uint16_t)scaled;
 
     
 

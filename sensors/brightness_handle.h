@@ -6,7 +6,7 @@
 #include "sensor_states.h"
 //#include "user_interface.h"
 
-#define BRIGHTNESS_SENSOR_DATA_MAX_LENGHT 40
+#define BRIGHTNESS_SENSOR_DATA_MAX_LENGHT 30
 #define BRIGHTNESS_SENSOR_RESOLUTION 1  //Supply voltage value (range 0.0V - Max Value)
 
 #define BRIGHTNESS_SENSOR_MAX_VALUE 80

@@ -43,17 +43,17 @@ class App {
 
 public:
   App();
-  bool flag_ready_to_sleep; // true when not task is pending. False if the
-                            // app_state_control funtion need to bee executed at
-                            // least once before activate sleep mode
-  bool show_stats;
-  int counter;
-  bool flag_change_mode;
-  App_cycle_state get_status();
-  void set_status(App_cycle_state new_status);
+//   bool flag_ready_to_sleep; // true when not task is pending. False if the
+//                             // app_state_control funtion need to bee executed at
+//                             // least once before activate sleep mode
+// //   bool show_stats;
+// //   int counter;
+// //   bool flag_change_mode;
+// //   App_cycle_state get_status();
+// //   void set_status(App_cycle_state new_status);
   App_mode get_mode();
-  void change_to_next_mode();
-  void set_mode_advance_mode();
+//   void change_to_next_mode();
+//   void set_mode_advance_mode();
 
 private:
   App_cycle_state _status;
@@ -61,8 +61,6 @@ private:
 };
 
 void app_init();
-void app_state_control(); // This funtion runs diferent protocol over the system
-                          // to validate behavior
 App *app_get();
 
 #endif // APP_H
